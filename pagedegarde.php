@@ -13,7 +13,7 @@
 	<input class="styled" type="button" value="Faire une requête SQL" />
 <a/>
 
-<a href = "script_personel_PDO.php">
+<a href = "page_personelle.php">
 	<input class="style" type ="button" value="Utiliser le module PDO"/>
 <a/>
 </body>

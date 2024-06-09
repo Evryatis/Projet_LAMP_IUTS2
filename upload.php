@@ -1,53 +1,21 @@
 <?php
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Check if the file was uploaded without errors
-    if (isset($_FILES['file']) && $_FILES['file']['error'] == UPLOAD_ERR_OK) {
-        $fileTmpPath = $_FILES['file']['tmp_name'];
-        $fileName = $_FILES['file']['name'];
-	$fileNameCmps = explode(".", $fileName);
-        $fileExtension = strtolower(end($fileNameCmps));
+$filePath = '/var/www/html/S203/test.txt';
 
-        // Check if the file is a ZIP file
-        if ($fileExtension === 'zip') {
-            // Define destination paths for the uploaded file and extraction
-            $uploadFileDir = '/S203/fichiers_uploades/';
-            $uploadFilePath = $uploadFileDir.$fileName;
-	    echo $uploadFilePath;
-	    echo $uploadFileDir.$fileName;
-            $extractPath = $uploadFileDir.'/extracted/';
-
-            // Move the uploaded file to the destination directory
-            if (move_uploaded_file($fileTmpPath, $uploadFilePath)) {
-                echo "Le fichier a été uploadé avec succès.";
-
-                // Open and extract the ZIP archive
-                $zip = new ZipArchive();
-                if ($zip->open($uploadFilePath) === TRUE) {
-                    $zip->extractTo($extractPath);
-                    $zip->close();
-                    echo "Le fichier a été extrait avec succès.";
-
-                    // Display the extracted files
-                    $extractedFiles = scandir($extractPath);
-                    foreach ($extractedFiles as $file) {
-                        if ($file !== '.' && $file !== '..') {
-                            echo "<br>File: " . $file;
-                        }
-                    }
-                } else {
-                    echo "Échec de l'ouverture de l'archive ZIP.";
-                }
-            } else {
-                echo "Erreur lors du déplacement du fichier téléchargé.";
-            }
-        } else {
-            echo "Seuls les fichiers ZIP sont autorisés.";
-        }
-    } else {
-        echo "Erreur lors de l'upload du fichier : " . $_FILES['file']['error'];
-    }
+// Vérifie si le fichier existe
+if (file_exists($filePath)) {
+	// Envoie les en-têtes HTTP pour forcer le téléchargement du fichier
+	header('Content-Description: File Transfer');
+	header('Content-Type: application/octet-stream');
+	header('Content-Disposition: attachment; filename="' . basename($filePath) . '"');
+	header('Expires: 0');
+	header('Cache-Control: must-revalidate');
+	header('Pragma: public');
+	header('Content-Length: ' . filesize($filePath));
+	readfile($filePath); // Lit le fichier et le transmet au client
+	exit;
 } else {
-    echo "Méthode de requête non autorisée.";
+	// Si le fichier n'existe pas, affiche un message d'erreur
+	echo "Le fichier n'existe pas.";
 }
 ?>
 
