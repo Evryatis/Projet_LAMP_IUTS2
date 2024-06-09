@@ -14,7 +14,7 @@
 <a/>
 
 <a href = "page_personelle.php">
-	<input class="style" type ="button" value="Utiliser le module PDO"/>
+	<input class="style" type ="button" value="Utiliser le bouton de téléchargement"/>
 <a/>
 </body>
 </html>
